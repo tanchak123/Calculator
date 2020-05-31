@@ -1,8 +1,10 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Panel extends JPanel {
     private static JTextField textField = new JTextField(12);
@@ -12,14 +14,13 @@ public class Panel extends JPanel {
     private ArrayList<JButton> buttons = new ArrayList<>();
 
     public Panel() {
+        int x = 10;
+        int y = 100;
         add(textField);
         textField.setEditable(false);
         textField.setFont(font.deriveFont(Font.BOLD,30));
         textField.setBounds(10,10, 300, 80);
         setLayout(null);
-        int count = 1;
-        int x = 10;
-        int y = 100;
         createBottom("0",110, 250);
         createBottom(Colums.PLUS.getS(), 10, 250);
         createBottom(Colums.MINUS.getS(), 210, 250);
@@ -30,6 +31,7 @@ public class Panel extends JPanel {
         createBottom(Colums.FRACTION.getS(), 110, 350);
         createBottom(Colums.CLEAR.getS(), 210, 350);
         createBottom(Colums.EQUAL.getS(), 10, 400, 300, 50);
+        int count = 1;
         while (count <= 9) {
             createBottom(String.valueOf(count), x, y, 100, 50);
             count++;
@@ -57,14 +59,14 @@ public class Panel extends JPanel {
         b1.setFont(font);
         b1.addActionListener(handler);
         add(b1);
-        b1.setBounds(x, y,  w, h);
+        b1.setBounds(x, y, w, h);
     }
 
     private String setResult(String value) {
         int count = 0;
         value = value.replaceAll(" ", "");
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < value.length(); i ++) {
+        for (int i = 0; i < value.length(); i++) {
             stringBuilder.append(value.charAt(i));
             if ((i + 1) % 3 == 0) {
                 stringBuilder.append(" ");
@@ -83,11 +85,9 @@ public class Panel extends JPanel {
             if (buttonText.equals('C')) {
                 textField.setText("");
                 return;
-            }
-            else if (buttonText.equals('=')) {
+            } else if (buttonText.equals('=')) {
                 textField.setText(getResult(fieldText));
-            }
-            else {
+            } else {
                 textField.setText(setResult(textField.getText() + button.getText()));
             }
         }
@@ -96,7 +96,7 @@ public class Panel extends JPanel {
     private String getResult(String fieldText) {
         StringBuilder sb = new StringBuilder();
         StringBuilder chars = new StringBuilder();
-        for (int i = 0; i < fieldText.length() ; i++) {
+        for (int i = 0; i < fieldText.length(); i++) {
             if (!Character.isDigit(fieldText.charAt(i))) {
                 sb.append(" ");
                 chars.append(fieldText.charAt(i));
@@ -107,7 +107,7 @@ public class Panel extends JPanel {
         String[] nums = sb.toString().split(" ");
         String[] character = chars.toString().split("");
         long result = Long.parseLong(nums[0]);
-        for (int i = 1; i < nums.length; i ++) {
+        for (int i = 1; i < nums.length; i++) {
             switch (character[i - 1]) {
                 case "+":
                     result += Long.parseLong(nums[i]);
@@ -130,14 +130,16 @@ public class Panel extends JPanel {
                 case ",":
                     result = Long.parseLong(result + "," + nums[i]);
                     break;
+                default:
+                    break;
             }
         }
         return String.valueOf(result);
     }
 
     private int getI(int i, String fieldText) {
-        while (i < fieldText.length() &&
-                Character.isDigit(fieldText.charAt(i))) {
+        while (i < fieldText.length()
+                && Character.isDigit(fieldText.charAt(i))) {
             i++;
         }
         return i - 1;

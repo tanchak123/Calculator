@@ -1,4 +1,5 @@
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class Start {
 
@@ -12,6 +13,7 @@ public class Start {
         window.add(new Panel());
         window.setVisible(true);
     }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override

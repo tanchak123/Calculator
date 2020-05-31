@@ -2,16 +2,16 @@ public enum Colums {
     DELETE('C'), PLUS('+'), MINUS('-'), MULTIPLY('*'), DIVIDE('÷'), DIVIDER('%'), DEGREE('^'),
     FRACTION(','), CLEAR('C'), EQUAL('=')
     ;
-    char c;
+    char character;
     Colums(char c) {
-        this.c = c;
+        character = c;
     }
 
     public char getC() {
-        return c;
+        return character;
     }
 
     public String getS() {
-        return "" + c;
+        return "" + character;
     }
 }
