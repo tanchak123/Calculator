@@ -62,23 +62,9 @@ public class Panel extends JPanel {
         b1.setBounds(x, y, w, h);
     }
 
-    private String setResult(String value) {
-        int count = 0;
-        value = value.replaceAll(" ", "");
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < value.length(); i++) {
-            stringBuilder.append(value.charAt(i));
-            if ((i + 1) % 3 == 0) {
-                stringBuilder.append(" ");
-            }
-        }
-        return stringBuilder.toString();
-    }
-
     public class Handler implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            long result = 0;
             JButton button = (JButton) e.getSource();
             Character buttonText = button.getText().charAt(0);
             String fieldText = textField.getText().replaceAll(" ", "");
@@ -86,9 +72,15 @@ public class Panel extends JPanel {
                 textField.setText("");
                 return;
             } else if (buttonText.equals('=')) {
-                textField.setText(getResult(fieldText));
+                textField.setText(setSpace(getResult(fieldText)));
+            } else if (buttonText.equals(Colums.FRACTION.getC())) {
+                if (textField.getText().contains(".")) {
+                    textField.setText(textField.getText());
+                    return;
+                }
+                textField.setText(textField.getText() + '.');
             } else {
-                textField.setText(setResult(textField.getText() + button.getText()));
+                textField.setText(setSpace(textField.getText() + button.getText()));
             }
         }
     }
@@ -96,52 +88,90 @@ public class Panel extends JPanel {
     private String getResult(String fieldText) {
         StringBuilder sb = new StringBuilder();
         StringBuilder chars = new StringBuilder();
+        boolean start = false;
         for (int i = 0; i < fieldText.length(); i++) {
-            if (!Character.isDigit(fieldText.charAt(i))) {
+            if (!Character.isDigit(fieldText.charAt(i))
+                    && start) {
+                if (fieldText.charAt(i) == '.') {
+                    sb.append(fieldText.charAt(i));
+                    continue;
+                }
                 sb.append(" ");
                 chars.append(fieldText.charAt(i));
+                start = false;
                 continue;
             }
             sb.append(fieldText.charAt(i));
+            start = true;
         }
         String[] nums = sb.toString().split(" ");
         String[] character = chars.toString().split("");
-        long result = Long.parseLong(nums[0]);
+        double result = Double.parseDouble(nums[0]);
         for (int i = 1; i < nums.length; i++) {
             switch (character[i - 1]) {
                 case "+":
-                    result += Long.parseLong(nums[i]);
+                    result += Double.parseDouble(nums[i]);
                     break;
                 case "-":
-                    result -= Long.parseLong(nums[i]);
+                    result -= Double.parseDouble(nums[i]);
                     break;
                 case "*":
-                    result *= Long.parseLong(nums[i]);
+                    result *= Double.parseDouble(nums[i]);
                     break;
                 case "÷":
-                    result /= Long.parseLong(nums[i]);
+                    result /= Double.parseDouble(nums[i]);
                     break;
                 case "%":
-                    result %= Long.parseLong(nums[i]);
+                    result %= Double.parseDouble(nums[i]);
                     break;
                 case "^":
-                    result = (long) Math.pow(result, Long.parseLong(nums[i]));
-                    break;
-                case ",":
-                    result = Long.parseLong(result + "," + nums[i]);
+                    result = (double) Math.pow(result, Double.parseDouble(nums[i]));
                     break;
                 default:
                     break;
             }
         }
-        return String.valueOf(result);
+        return isDouble(String.valueOf(result));
     }
 
-    private int getI(int i, String fieldText) {
-        while (i < fieldText.length()
-                && Character.isDigit(fieldText.charAt(i))) {
-            i++;
+    private String setSpace(String value) {
+        int count = 0;
+        int sbIndex = 0;
+        value = value.replaceAll(" ", "");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < value.length(); i++) {
+            stringBuilder.append(value.charAt(i));
+            sbIndex++;
+            if (!Character.isDigit(value.charAt(i))) {
+                if (value.charAt(i) == '.') {
+                    count = 0;
+                    continue;
+                }
+                if (count % 3 != 0) {
+                    stringBuilder.insert(sbIndex - 1, ' ');
+                    sbIndex++;
+                }
+                stringBuilder.append(" ");
+                count = 0;
+                sbIndex++;
+                continue;
+            }
+            count++;
+            if ((count) % 3 == 0) {
+                stringBuilder.append(" ");
+                sbIndex++;
+            }
         }
-        return i - 1;
+        return stringBuilder.charAt(0) == Colums.MINUS.getC() ? Colums.MINUS.getS()
+                + stringBuilder.toString().substring(2, stringBuilder.length())
+            : stringBuilder.toString();
     }
+
+    private String isDouble(String string) {
+        if (string.charAt(string.length() - 1) == '0') {
+            return string.substring(0, string.length() - 2);
+        }
+        return string;
+    }
+
 }

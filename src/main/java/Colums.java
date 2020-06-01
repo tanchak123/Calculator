@@ -1,6 +1,6 @@
 public enum Colums {
-    DELETE('C'), PLUS('+'), MINUS('-'), MULTIPLY('*'), DIVIDE('÷'), DIVIDER('%'), DEGREE('^'),
-    FRACTION(','), CLEAR('C'), EQUAL('=')
+    DELETE('D'), PLUS('+'), MINUS('-'), MULTIPLY('*'), DIVIDE('÷'), DIVIDER('%'), DEGREE('^'),
+    FRACTION('.'), CLEAR('C'), EQUAL('=')
     ;
     char character;
     Colums(char c) {
