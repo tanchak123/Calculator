@@ -1,10 +1,8 @@
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class Panel extends JPanel {
     private static JTextField textField = new JTextField(12);
@@ -19,7 +17,13 @@ public class Panel extends JPanel {
         add(textField);
         textField.setEditable(false);
         textField.setFont(font.deriveFont(Font.BOLD,30));
-        textField.setBounds(10,10, 300, 80);
+        textField.setBounds(10,10, 200, 80);
+        b1 = new JButton(Colums.DELETE.getS());
+        buttons.add(b1);
+        b1.setFont(font.deriveFont(Font.BOLD, 30));
+        b1.addActionListener(handler);
+        add(b1);
+        b1.setBounds(210, 10, 100, 80);
         setLayout(null);
         createBottom("0",110, 250);
         createBottom(Colums.PLUS.getS(), 10, 250);
@@ -74,11 +78,42 @@ public class Panel extends JPanel {
             } else if (buttonText.equals('=')) {
                 textField.setText(setSpace(getResult(fieldText)));
             } else if (buttonText.equals(Colums.FRACTION.getC())) {
-                if (textField.getText().contains(".")) {
-                    textField.setText(textField.getText());
+                for (Colums colum : Colums.values()) {
+                    if (fieldText.charAt(fieldText.length() - 1) == colum.getC()) {
+                        textField.setText(setSpace(fieldText));
+                        return;
+                    }
+                }
+                StringBuilder sb = new StringBuilder();
+                boolean helper = false;
+                for (Character character : fieldText.toCharArray()) {
+                    if (Character.isDigit(character)) {
+                        sb.append(character);
+                        continue;
+                    }
+                    if (character == '.' && helper == false) {
+                        helper = true;
+                        sb.append(character);
+                        continue;
+                    }
+                    for (Colums colum : Colums.values()) {
+                        if (character == colum.getC()) {
+                            helper = false;
+                            sb.append(character);
+                            break;
+                        }
+                    }
+                }
+                if (!helper) {
+                    sb.append(buttonText);
+                }
+                textField.setText(setSpace(sb.toString()));
+            } else if (buttonText.equals(Colums.DELETE.getC())){
+                if (fieldText.length() <= 1) {
+                    textField.setText("");
                     return;
                 }
-                textField.setText(textField.getText() + '.');
+                textField.setText(setSpace(fieldText.substring(0, fieldText.length() - 1)));
             } else {
                 textField.setText(setSpace(textField.getText() + button.getText()));
             }
@@ -164,7 +199,7 @@ public class Panel extends JPanel {
         }
         return stringBuilder.charAt(0) == Colums.MINUS.getC() ? Colums.MINUS.getS()
                 + stringBuilder.toString().substring(2, stringBuilder.length())
-            : stringBuilder.toString();
+                : stringBuilder.toString();
     }
 
     private String isDouble(String string) {

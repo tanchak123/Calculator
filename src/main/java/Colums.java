@@ -1,5 +1,5 @@
 public enum Colums {
-    DELETE('D'), PLUS('+'), MINUS('-'), MULTIPLY('*'), DIVIDE('÷'), DIVIDER('%'), DEGREE('^'),
+    DELETE('˂'), PLUS('+'), MINUS('-'), MULTIPLY('*'), DIVIDE('÷'), DIVIDER('%'), DEGREE('^'),
     FRACTION('.'), CLEAR('C'), EQUAL('=')
     ;
     char character;
