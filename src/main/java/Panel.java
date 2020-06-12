@@ -115,7 +115,15 @@ public class Panel extends JPanel {
                 }
                 textField.setText(setSpace(fieldText.substring(0, fieldText.length() - 1)));
             } else {
-                textField.setText(setSpace(textField.getText() + button.getText()));
+                if (fieldText.length() > 1 && !Character.isDigit(buttonText) && !Character.isDigit(fieldText.charAt(fieldText.length() - 1))) {
+                    textField.setText(fieldText.substring(0, fieldText.length() - 1) + " " + buttonText);
+                    return;
+                }
+                if (fieldText.length() < 1 && buttonText != '-' && !Character.isDigit(buttonText)) {
+                    textField.setText("");
+                    return;
+                }
+                textField.setText(setSpace(fieldText + button.getText()));
             }
         }
     }
@@ -160,7 +168,7 @@ public class Panel extends JPanel {
                     result %= Double.parseDouble(nums[i]);
                     break;
                 case "^":
-                    result = (double) Math.pow(result, Double.parseDouble(nums[i]));
+                    result = Math.pow(result, Double.parseDouble(nums[i]));
                     break;
                 default:
                     break;
@@ -171,34 +179,28 @@ public class Panel extends JPanel {
 
     private String setSpace(String value) {
         int count = 0;
-        int sbIndex = 0;
-        value = value.replaceAll(" ", "");
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < value.length(); i++) {
-            stringBuilder.append(value.charAt(i));
-            sbIndex++;
+        for (int i = value.length() - 1; i >= 0; i--) {
             if (!Character.isDigit(value.charAt(i))) {
                 if (value.charAt(i) == '.') {
+                    stringBuilder.insert(0,value.charAt(i));
                     count = 0;
                     continue;
                 }
-                if (count % 3 != 0) {
-                    stringBuilder.insert(sbIndex - 1, ' ');
-                    sbIndex++;
-                }
-                stringBuilder.append(" ");
+                stringBuilder.insert(0, " " + value.charAt(i) + ' ');
                 count = 0;
-                sbIndex++;
                 continue;
             }
-            count++;
-            if ((count) % 3 == 0) {
-                stringBuilder.append(" ");
-                sbIndex++;
+            if (count == 3) {
+                stringBuilder.insert(0, ' ');
+                count = 0;
             }
+            stringBuilder.insert(0, value.charAt(i));
+            count++;
         }
-        return stringBuilder.charAt(0) == Colums.MINUS.getC() ? Colums.MINUS.getS()
-                + stringBuilder.toString().substring(2, stringBuilder.length())
+        return stringBuilder.length() > 1 ? stringBuilder.charAt(1) == Colums.MINUS.getC() ? Colums.MINUS.getS()
+                + stringBuilder.toString().substring(3, stringBuilder.length())
+                : stringBuilder.toString()
                 : stringBuilder.toString();
     }
 
