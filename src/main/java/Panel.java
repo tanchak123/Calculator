@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Panel extends JPanel {
-    private static JTextField textField = new JTextField(12);
+    private static JTextField textField = new JTextField(16);
     private static JButton b1;
     private static Font font = new Font("SanSerif", Font.BOLD, 20);
     private Handler handler = new Handler();
